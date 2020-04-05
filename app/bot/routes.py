@@ -1,15 +1,25 @@
 from flask import Blueprint, request
 from twilio.twiml.messaging_response import MessagingResponse
+from .methods import *
 
 bot_bp = Blueprint('bot', __package__, url_prefix='/bot')
 
+options = {
+    '0': information_numbers(),
+    '1': information_graphic(),
+    '2': 'Option 2',
+    '3': 'Option 3',
+}
 
 @bot_bp.route('', methods=['POST'])
 def bot_post():
     incoming_message = request.values.get('Body', '').lower()
-    response = MessagingResponse()
-    message = response.message()
+    
+    if incoming_message in options:
+        return select_menu_option(incoming_message, options)
+    if 'menu' in incoming_message:
+        return list_menu()
 
-    message.body(f'Hey, you send me this message {incoming_message}')
+    return default_response()
 
-    return str(response)
+

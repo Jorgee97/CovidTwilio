@@ -1,5 +1,6 @@
 flask
 twilio
 pandas
-request
+requests
 flask-mongoengine
+beautifulsoup4

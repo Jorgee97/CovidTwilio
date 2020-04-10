@@ -1,4 +1,5 @@
 from twilio.twiml.messaging_response import MessagingResponse
+from ..data.model import DayImage
 
 def list_menu() -> str:
     return response_builder(f"""
@@ -22,8 +23,8 @@ def information_numbers() -> str:
 
 
 def information_graphic() -> str:
-    return response_builder("Este es el grafico del día", 
-    "https://www.minsalud.gov.co/salud/publica/PET/PublishingImages/covid-19%20Colombia/040420_post_coronavirus_baja.jpg")
+    images = DayImage.objects.order_by('-id').first()
+    return response_builder(images.title, images.url)
 
 
 def default_response() -> str:

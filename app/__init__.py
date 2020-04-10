@@ -15,4 +15,6 @@ def create_app():
 
 def register_blueprints(app):
     from app.bot import routes
+    from app.data import scrapping
     app.register_blueprint(routes.bot_bp)
+    app.register_blueprint(scrapping.scrap_bp)

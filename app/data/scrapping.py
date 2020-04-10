@@ -8,8 +8,6 @@ from sodapy import Socrata
 from unicodedata import normalize
 import os
 
-DATOS_GOV_KEY = os.environ.get('DATOS_GOV_KEY')
-
 def get_day_image():
     r = requests.get('https://www.minsalud.gov.co/salud/publica/PET/Paginas/Covid-19_copia.aspx')
     soup = BeautifulSoup(r.text, 'html.parser')

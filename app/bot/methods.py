@@ -24,8 +24,10 @@ def information_numbers() -> str:
 
 def information_graphic() -> str:
     images = DayImage.objects.order_by('-id').first()
+    if images is None:
+        return response_builder("Lo sentimos, no hemos encontrado información.")
     return response_builder(images.title, images.url)
-
+    
 
 def default_response() -> str:
     return response_builder("""Opción no soportada, lo sentimos por el inconveniente, envia "menu" para mostrar las opciones.""")

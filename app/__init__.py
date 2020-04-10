@@ -14,5 +14,5 @@ def create_app():
 
 
 def register_blueprints(app):
-    from app.bot import routes
+    from app.bot import routes    
     app.register_blueprint(routes.bot_bp)

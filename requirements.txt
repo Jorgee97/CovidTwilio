@@ -4,3 +4,4 @@ pandas
 requests
 flask-mongoengine
 beautifulsoup4
+sodapy

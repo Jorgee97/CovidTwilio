@@ -11,6 +11,7 @@ class Config():
     }
 
     DATOS_GOV_KEY = os.environ.get('DATOS_GOV_KEY')
+    TWILIO_ML_API = os.environ.get('TWILIO_ML_API') or 'abcdefggjgdd'
 
 class DevConfig(Config):
     DEBUG = True

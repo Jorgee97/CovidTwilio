@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from twilio.twiml.messaging_response import MessagingResponse
 from .methods import *
-from ..data.scrapping import get_data
+from ..data.scrapping import get_data, get_day_image
 
 bot_bp = Blueprint('bot', __package__, url_prefix='/bot')
 
@@ -24,3 +24,10 @@ def bot_post():
 
     return default_response()
 
+
+@bot_bp.route('/fetch/data', methods=['GET'])
+def bot_fetch_image_manually():
+    get_data()
+    get_day_image()
+
+    return "Done."

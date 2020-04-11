@@ -1,12 +1,12 @@
-from app import db
 import requests
 from bs4 import BeautifulSoup
 from .model import DayImage, Covid
+from ..config import Config
 from flask import Blueprint, request, Response
 import pandas as pd
 from sodapy import Socrata
 from unicodedata import normalize
-import os
+
 
 def get_day_image():
     r = requests.get('https://www.minsalud.gov.co/salud/publica/PET/Paginas/Covid-19_copia.aspx')
@@ -15,24 +15,24 @@ def get_day_image():
     resultsRow = soup.find_all('div', attrs={'id': 'WebPartWPQ4'})
 
     results = []
-
+    origin_url = 'https://www.minsalud.gov.co'
     for resultRow in resultsRow:
         text = "Imagen del dia"
         img = resultRow.find('img').get('src')
     
         results.append({
             'text': text,
-            'img': img
+            'img': origin_url + img
         })
     save_data_image(results)
 
 
-def save_data_image(data: list):
-    DayImage(title=data[0].text, url=data[0].img).save()
+def save_data_image(data: list):    
+    DayImage(title=data[0]['text'], url=data[0]['img']).save()
 
 
 def get_data():
-    client = Socrata("www.datos.gov.co", DATOS_GOV_KEY)
+    client = Socrata("www.datos.gov.co", Config.DATOS_GOV_KEY)
     results = client.get("gt2j-8ykr", limit=10000)
     results_df = pd.DataFrame.from_records(results)
     results_df.index = results_df['id_de_caso']
@@ -44,12 +44,12 @@ def get_data():
     results_df = results_df.apply(f)
     results_df = results_df.apply(translate_lambda)
 
-    results_df.to_csv('covid19-colombia.csv')
-    
+    # results_df.to_csv('covid19-colombia.csv')
+
+    Covid.drop_collection()
     with open('covid19-colombia.csv', 'r') as file:
         data = file.readlines()
-        for info in data:
-            print(info)
+        for info in data:            
             id_case, date, city, departament, atention, age, sex, tipo, procedence = info.split(',')
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                 departamento=departament, atencion=atention, edad=age, sexo=sex, 

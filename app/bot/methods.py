@@ -12,15 +12,16 @@ def clear_string(s: str) -> str:
 def list_menu(not_found: str = "") -> str:
     return response_builder(f"""
     {not_found}
-    Bienvenid@ a COVID19 Info\n Este es nuestro menu:
-    0: Lineas MinSalud
-    1: Grafico Situación Actual
-    2: Resumen
+    Bienvenid@ a COVID19 Info
+    Este es nuestro menu:
+    0: Lineas MinSalud Colombia
+    1: Grafico Situación Actual Colombia
+    2: Resumen COVID19 Colombia
+    3: Recomendacion de peliculas o series (Aleatorio)
 
-    Filtro por ciudad o departamento (Ej, Bogota)
+    Si desea filtrar por ciudad o departamento, digite:
+    (Ej, Bogota)
 
-    3: Recomendacion de peliculas o series (Random)
-    
     """)
 
 
@@ -81,7 +82,7 @@ def response_builder(message: str, media: str = None) -> str:
     response = MessagingResponse()
     outgoing_message = response.message()
 
-    outgoing_message.body(message)
+    outgoing_message.body(message.strip())
 
     if media is not None:
         outgoing_message.media(media)

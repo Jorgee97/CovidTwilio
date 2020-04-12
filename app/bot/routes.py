@@ -9,7 +9,7 @@ options = {
     '0': information_numbers(),
     '1': information_graphic(),
     '2': 'Option 2',
-    '3': 'Option 3',
+    '3': information_filter(),
 }
 
 
@@ -22,7 +22,7 @@ def bot_post():
     if 'menu' in incoming_message:
         return list_menu()
 
-    return default_response()
+    return information_filter(incoming_message)
 
 
 @bot_bp.route('/fetch/data', methods=['GET'])

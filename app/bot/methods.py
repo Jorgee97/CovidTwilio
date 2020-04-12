@@ -9,14 +9,19 @@ def clear_string(s: str) -> str:
         'utf-8')
 
 
-def list_menu() -> str:
+def list_menu(not_found: str = "") -> str:
     return response_builder(f"""
+    {not_found}
     Bienvenid@ a COVID19 Info
     Este es nuestro menu:
-    0: Lineas MinSalud
-    1: Grafico Situación Actual
-    2: Resumen
-    Filtro por ciudad o departamento (Ej, Bogota)
+    0: Lineas MinSalud Colombia
+    1: Grafico Situación Actual Colombia
+    2: Resumen COVID19 Colombia
+    3: Recomendacion de peliculas o series (Aleatorio)
+
+    Si desea filtrar por ciudad o departamento, digite:
+    (Ej, Bogota)
+
     """)
 
 
@@ -40,26 +45,44 @@ def information_graphic() -> str:
     
 
 def information_filter(city_or_state: str = "") -> str:
+    response = f"Casos en *{city_or_state.capitalize()}* \n"
     city_or_state = clear_string(city_or_state)
-    covid = Covid.objects(Q(ciudad_ubicacion__contains=city_or_state) | Q(departamento__contains=city_or_state))
-
-    print(city_or_state)
-
+    covid = Covid.objects(Q(ciudad_ubicacion__exact=city_or_state) | Q(departamento__exact=city_or_state))
     if covid is None or len(covid) == 0:
         return default_response()
-    return response_builder(f"Total {len(covid)}")
+
+    status_patients = covid.aggregate([{
+        '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
+    }])
+
+    for case in list(status_patients):
+        response += f"*{case['_id'].capitalize()}*: {case['cases']} \n"
+
+    return response_builder(response)
+
+
+def information_total() -> str:
+    response = f"Casos en *Colombia* \n"
+    covid = Covid.objects().aggregate([
+        {
+            '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
+        }
+    ])
+    for case in list(covid):
+        response += f"*{case['_id'].capitalize()}*: {case['cases']} \n"
+    return response_builder(response)
 
 
 def default_response() -> str:
-    return response_builder("""Opción no soportada, lo sentimos por el inconveniente, envia "menu" para mostrar las 
-    opciones.""")
+    response = "No hemos encontrado informacion, por favor intenta nuevamente"
+    return list_menu(response)
 
 
 def response_builder(message: str, media: str = None) -> str:
     response = MessagingResponse()
     outgoing_message = response.message()
 
-    outgoing_message.body(message)
+    outgoing_message.body(message.strip())
 
     if media is not None:
         outgoing_message.media(media)

@@ -48,7 +48,7 @@ def get_data():
     Covid.drop_collection()
     with open('covid19-colombia.csv', 'r') as file:
         data = file.readlines()
-        for info in data:
+        for info in data[1:]:
             id_case, date, city, departament, attention, age, sex, tipo, precedence = info.split(',')
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                   departamento=departament, atencion=attention, edad=age, sexo=sex,

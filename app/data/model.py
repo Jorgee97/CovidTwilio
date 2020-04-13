@@ -1,8 +1,10 @@
 from app import db
 
+
 class DayImage(db.Document):
     title = db.StringField(required=True)
     url = db.StringField(required=True)
+
 
 class Covid(db.Document):
     id_caso = db.StringField(required=True)
@@ -14,3 +16,8 @@ class Covid(db.Document):
     sexo = db.StringField(required=True)
     tipo = db.StringField(required=True)
     pais_procedencia = db.StringField(required=True)
+
+
+class Movies(db.Document):
+    title = db.StringField(required=True)
+    url = db.StringField(required=True)

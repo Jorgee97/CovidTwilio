@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from .model import DayImage, Covid
+from .model import DayImage, Covid, Movies
 from ..config import Config
 import pandas as pd
 from sodapy import Socrata
@@ -15,7 +15,7 @@ def get_day_image():
     results = []
     origin_url = 'https://www.minsalud.gov.co'
     for resultRow in results_row:
-        text = "Imagen del dia"
+        text = "Casos de COVID19 en Colombia"
         img = resultRow.find('img').get('src')
 
         results.append({
@@ -53,3 +53,17 @@ def get_data():
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                   departamento=departament, atencion=attention, edad=age, sexo=sex,
                   tipo=tipo, pais_procedencia=precedence).save()
+
+
+def get_movies_series():
+    req = requests.get('http://finde.latercera.com/series-y-peliculas/que-ver-en-netflix-peliculas-series-buenas-abril-2/')
+    info = BeautifulSoup(req.text, 'html.parser')
+    
+    info_row = info.find_all('div', attrs={'class': 'bg-white collapse-fix-xs'})
+
+    h2_titles = info_row[0].find_all('h2')[:-2]
+    images = info_row[0].select('figure > img')[:-2]
+
+    Movies.drop_collection()
+    for title, img in zip(h2_titles, images):
+        Movies(title=title.text, url=img.get('src')).save()

@@ -2,6 +2,7 @@ from flask import Blueprint, request
 from .methods import (information_graphic, clear_string, information_filter, information_numbers, information_total,
                       list_menu, select_menu_option, get_random_movie_or_series)
 from ..data.scrapping import get_data, get_day_image, get_movies_series
+from ..data.task import scrap_every_day
 
 bot_bp = Blueprint('bot', __package__, url_prefix='/bot')
 
@@ -38,3 +39,9 @@ def bot_fetch_image_manually():
 @bot_bp.route('/fetch/random', methods=['GET'])
 def bot_fetch_random_movie():
     return get_random_movie_or_series()
+
+
+@bot_bp.route('/run/task', methods=['GET'])
+def bot_run_task():
+    scrap_every_day()
+    return "Done."

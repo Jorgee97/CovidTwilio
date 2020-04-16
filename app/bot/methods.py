@@ -1,7 +1,9 @@
-from twilio.twiml.messaging_response import MessagingResponse
-from ..data.model import DayImage, Covid
-from mongoengine.queryset.visitor import Q
+from random import randrange
 from unicodedata import normalize
+from flask import Response
+from twilio.twiml.messaging_response import MessagingResponse
+from ..data.model import DayImage, Covid, Movies
+from mongoengine.queryset.visitor import Q
 
 
 def clear_string(s: str) -> str:
@@ -73,9 +75,28 @@ def information_total() -> str:
     return response_builder(response)
 
 
+def get_random_movie_or_series() -> Response:
+    movies = Movies.objects
+    random_int = randrange(0, len(movies), 3)
+    random_movie = movies[random_int]
+    return response_builder_headers(random_movie.title, random_movie.url)
+
+
 def default_response() -> str:
     response = "No hemos encontrado informacion, por favor intenta nuevamente"
     return list_menu(response)
+
+
+def response_builder_headers(message: str, media: str = None) -> Response:
+    response = MessagingResponse()
+    outgoing_message = response.message()
+
+    outgoing_message.body(message.strip())
+
+    if media is not None:
+        outgoing_message.media(media)
+
+    return Response(headers={'Cache-Control': 'no-cache, max-age=0, no-store'}, response=str(response))
 
 
 def response_builder(message: str, media: str = None) -> str:
@@ -86,5 +107,4 @@ def response_builder(message: str, media: str = None) -> str:
 
     if media is not None:
         outgoing_message.media(media)
-
     return str(response)

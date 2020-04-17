@@ -1,0 +1,7 @@
+.vscode/
+.idea/
+.env/
+env/
+__pycache__/
+setup.sh
+covid19-colombia.csv

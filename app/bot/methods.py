@@ -28,7 +28,7 @@ def list_menu(not_found: str = "") -> str:
 
 
 def select_menu_option(option: str, options: dict) -> str:
-    return options.get(option, default_response())
+    return options.get(option, default_response())()
 
 
 def information_numbers() -> str:
@@ -79,6 +79,7 @@ def get_random_movie_or_series() -> Response:
     movies = Movies.objects
     random_int = randrange(0, len(movies), 3)
     random_movie = movies[random_int]
+    print("Calling random")
     return response_builder_headers(random_movie.title, random_movie.url)
 
 

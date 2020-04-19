@@ -46,19 +46,23 @@ def get_data():
     results_df.to_csv('covid19-colombia.csv')
 
     Covid.drop_collection()
+
+
+def save_covid_data():
     with open('covid19-colombia.csv', 'r') as file:
         data = file.readlines()
         for info in data[1:]:
-            id_case, date, city, departament, attention, age, sex, tipo, precedence = info.split(',')
+            id_case, date, city, departament, attention, age, sex, tipo, precedence = info.split(',')[:9]
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                   departamento=departament, atencion=attention, edad=age, sexo=sex,
                   tipo=tipo, pais_procedencia=precedence).save()
 
 
 def get_movies_series():
-    req = requests.get('http://finde.latercera.com/series-y-peliculas/que-ver-en-netflix-peliculas-series-buenas-abril-2/')
+    req = requests.get(
+        'http://finde.latercera.com/series-y-peliculas/que-ver-en-netflix-peliculas-series-buenas-abril-2/')
     info = BeautifulSoup(req.text, 'html.parser')
-    
+
     info_row = info.find_all('div', attrs={'class': 'bg-white collapse-fix-xs'})
 
     h2_titles = info_row[0].find_all('h2')[:-2]

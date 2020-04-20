@@ -52,7 +52,7 @@ def save_covid_data():
     with open('covid19-colombia.csv', 'r') as file:
         data = file.readlines()
         for info in data[1:]:
-            id_case, date, city, departament, attention, age, sex, tipo, precedence = info.split(',')[:9]
+            id_case, date, code, city, departament, attention, age, sex, tipo, state, precedence = info.split(',')[:11]
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                   departamento=departament, atencion=attention, edad=age, sexo=sex,
                   tipo=tipo, pais_procedencia=precedence).save()

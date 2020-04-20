@@ -22,7 +22,9 @@ def list_menu(not_found: str = "") -> str:
     3: Recomendacion de peliculas o series (Aleatorio)
 
     Si desea filtrar por ciudad o departamento, digite:
-    (Ej, Bogota)
+    (Ej, Cali, Barranquilla)
+
+    NOTA: Si desea buscar casos en Bogota, por favor digite Bogota d.c.
 
     """)
 

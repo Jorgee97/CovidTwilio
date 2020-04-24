@@ -53,7 +53,7 @@ def information_filter(city_or_state: str = "") -> str:
     covid = Covid.objects(Q(ciudad_ubicacion__exact=city_or_state) | Q(departamento__exact=city_or_state))
     if covid is None or len(covid) == 0:
         return default_response()
-    response = f"Casos en *{city_or_state.capitalize()}: ${len(covid)}* \n"
+    response = f"Casos en *{city_or_state.capitalize()}: {len(covid)}* \n"
     status_patients = covid.aggregate([{
         '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
     }])
@@ -65,12 +65,12 @@ def information_filter(city_or_state: str = "") -> str:
 
 
 def information_total() -> str:
-    response = f"Casos en *Colombia* \n"
     covid = Covid.objects().aggregate([
         {
             '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
         }
     ])
+    response = f"Casos en *Colombia: ${len(covid)}* \n"
     for case in list(covid):
         response += f"*{case['_id'].capitalize()}*: {case['cases']} \n"
     return response_builder(response)

@@ -70,7 +70,7 @@ def information_total() -> str:
             '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
         }
     ])
-    response = f"Casos en *Colombia: ${len(covid)}* \n"
+    response = f"Casos en *Colombia: ${len(list(covid))}* \n"
     for case in list(covid):
         response += f"*{case['_id'].capitalize()}*: {case['cases']} \n"
     return response_builder(response)

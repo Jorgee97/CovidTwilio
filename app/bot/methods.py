@@ -49,12 +49,11 @@ def information_graphic() -> str:
     
 
 def information_filter(city_or_state: str = "") -> str:
-    response = f"Casos en *{city_or_state.capitalize()}* \n"
     city_or_state = clear_string(city_or_state)
     covid = Covid.objects(Q(ciudad_ubicacion__exact=city_or_state) | Q(departamento__exact=city_or_state))
     if covid is None or len(covid) == 0:
         return default_response()
-
+    response = f"Casos en *{city_or_state.capitalize()}: ${len(covid)}* \n"
     status_patients = covid.aggregate([{
         '$group': {'_id': "$atencion", 'cases': {'$sum': 1}}
     }])

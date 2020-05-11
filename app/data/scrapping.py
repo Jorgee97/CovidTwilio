@@ -31,7 +31,7 @@ def save_data_image(data: list):
 
 def get_data():
     client = Socrata("www.datos.gov.co", Config.DATOS_GOV_KEY)
-    results = client.get("gt2j-8ykr", limit=10000)
+    results = client.get("gt2j-8ykr", limit=10000000)
     results_df = pd.DataFrame.from_records(results)
     results_df.index = results_df['id_de_caso']
     results_df = results_df.drop('id_de_caso', axis=1)
@@ -45,13 +45,18 @@ def get_data():
 
     results_df.to_csv('covid19-colombia.csv')
 
-    Covid.drop_collection()
+    # Covid.drop_collection()
+    # Verify how much data do we have saved and then start inserting from there
+
+    start_point = len(Covid.objects)
+    save_covid_data(start_point + 1)
 
 
-def save_covid_data():
+def save_covid_data(start_point):
     with open('covid19-colombia.csv', 'r') as file:
         data = file.readlines()
-        for info in data[1:]:
+
+        for info in data[start_point:]:
             id_case, date, code, city, departament, attention, age, sex, tipo, state, precedence = info.split(',')[:11]
             Covid(id_caso=id_case, fecha_diagnostico=date, ciudad_ubicacion=city,
                   departamento=departament, atencion=attention, edad=age, sexo=sex,

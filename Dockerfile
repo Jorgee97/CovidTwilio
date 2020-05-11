@@ -1,5 +1,9 @@
 FROM python:3.8-slim
 
+RUN    apt-get update \
+&& apt-get install openssl \
+&& apt-get install ca-certificates
+
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
